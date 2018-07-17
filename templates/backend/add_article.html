@@ -1,0 +1,55 @@
+{% extends 'backend/back_base.html' %}
+
+{% block content %}
+    <form action="{% url 'add_article' %}" method="post">
+    {% csrf_token %}
+        <div class="add_article">
+
+            <div class="form-group article_title">
+                <label for="title">标题</label>
+                <input class="form-control" type="text" name="article_title" id="title">
+            </div>
+
+
+            <div class="form-group">
+                <label for="content">内容(Kindeditor编辑器，不支持拖放/粘贴上传图片)</label>
+                <textarea style="width: 674px" class="form-control" name="article_content" id="content" cols="30" rows="10"></textarea>
+            </div>
+
+            <div class="well">
+                <p><b>文章分类</b></p>
+                {% for category in category_list %}
+                    <input type="radio" name="category" value="{{ category.pk }}"><sapn>{{ category.title }}</sapn>&nbsp;
+                {% endfor %}
+
+            </div>
+
+            <div class="well">
+                <p><b>文章标签</b></p>
+                {% for tag in tag_list %}
+                    <input type="checkbox" name="tag" value="{{ tag.pk }}"><sapn>{{ tag.tag_name }}</sapn>&nbsp;
+                {% endfor %}
+
+            </div>
+
+            <input type="submit" class="btn btn-default">
+
+        </div>
+    </form>
+
+    <script charset="utf-8" src="/static/kindeditor/kindeditor-all.js"></script>
+
+<script>
+        KindEditor.ready(function(K) {
+                window.editor = K.create('#content',{
+                    height:'500px',
+                    resizeType:0,
+                    uploadJson:'/upload/',
+                    extraFileUploadParams:{
+                            csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val()
+                        },
+                    filePostName:"upload_img"
+                });
+        });
+</script>
+{% endblock %}

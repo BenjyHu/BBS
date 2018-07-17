@@ -1,0 +1,20 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.my_head {
+    height: 60px;
+    margin-top: 0;
+    line-height: 60px;
+    padding-left: 20px;
+    background-color: #2b669a;
+}
+
+.title {
+    color: #0f0f0f;
+}
+
+.title:hover {
+    color: #0f0f0f;
+}

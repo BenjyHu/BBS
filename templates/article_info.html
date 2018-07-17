@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ article_obj.title }}
+{% endblock title %}
+
+{% block content %}
+    <h3><b>{{ article_obj.title }}</b></h3>
+    <hr/>
+    {{ article_obj.content|safe }}
+    {% csrf_token %}
+    <div class="clearfix">
+        <div class="div_digg" id="{{ article_obj.id }}">
+            {# 点赞   #}
+            <div class="diggit up_down">
+                <span class="diggnum">{{ article_obj.up_count }}</span>
+            </div>
+            {#  踩    #}
+            <div class="buryit up_down">
+                <span class="burynum">{{ article_obj.down_count }}</span>
+            </div>
+            <div class="clear"></div>
+            <div class="diggword" id="digg_tips"></div>
+        </div>
+    </div>
+
+
+    {#  评论部分  #}
+    <div class="comment_area">
+        <ul class="list-group content_list">
+            {% for comment in comment_list %}
+
+                <li class="list-group-item">
+
+                    <div style="color: gray">
+                        <a href="">#{{ forloop.counter }}楼</a>&nbsp;&nbsp;
+                        <span>{{ comment.comment_time|date:'Y-m-d H:i:s' }}</span>&nbsp;&nbsp;
+                        <a href="/{{ comment.user.username }}/">{{ comment.user.username }}</a>
+                        <a href="javascript:void(0)" class="pull-right reply" id="{{ comment.pk }}" name="{{ comment.user.username }}">回复</a>
+                    </div>
+                    <div>
+                        {% if comment.parent.pk %}
+                            <div class="well">
+                                <p>回复 {{ comment.user.username }}：{{ comment.parent.content }}</p>
+                            </div>
+                        {% endif %}
+                        <p>{{ comment.content }}</p>
+                    </div>
+                </li>
+            {% endfor %}
+
+
+        </ul>
+
+
+        <p><b>发表评论</b></p>
+        <p>
+            昵称：<input type="text" id="tbCommentAuthor" class="author" disabled="disabled" size="50"
+                      value="{{ request.user.username }}">
+        </p>
+        <div class="comment_content">
+            <textarea name="" class="content" cols="50" rows="10"></textarea>
+        </div>
+        <input type="button" class="btn-sm btn btn-default" value="提交">
+        <span class="error_msg"></span>
+    </div>
+
+
+    <script>
+        {# 点赞和踩的操作   #}
+        $('.up_down').on('click', function () {
+            if ('{{request.user.username}}') {
+                var obj = $(this);
+                var is_up = obj.hasClass('diggit');
+                $.ajax({
+                    url: '/up_down/',
+                    type: 'post',
+                    data: {
+                        'article_id': '{{ article_obj.pk }}',
+                        'is_up': is_up,
+                        'csrfmiddlewaretoken': $("[name='csrfmiddlewaretoken']").val()
+                    },
+                    success: function (data) {
+                        if (data.status) {
+                            if ('{{request.user}}' === '{{ article_obj.author }}') {
+                                $('.diggword').text('不能给对自己操作')
+                            } else {
+                                var num = obj.text();
+                                obj.text(parseInt(num) + 1)
+                            }
+                        } else {
+                            var msg = data.handel ? '您已推荐过' : '你已反对过';
+                            $('.diggword').text(msg)
+                        }
+                    }
+                })
+            } else {
+                $('.diggword').html("<a style='color:red' href='/login/'>点击登录</a>")
+            }
+        });
+
+
+        {#  评论功能  #}
+        var pid = '';
+        $('.btn').on('click', function () {
+            var content = $('.content').val();
+            if (pid){
+                var index = content.indexOf('\n');
+                content = content.slice(index+1);
+            }
+
+            if (content) {
+                $.ajax({
+                    url: '/comment/',
+                    type: 'post',
+                    data: {
+                        'content': content,
+                        'pid': pid,
+                        'article_id': '{{ article_obj.pk }}',
+                        'csrfmiddlewaretoken': $("[name='csrfmiddlewaretoken']").val(),
+                    },
+                    success: function (data) {
+                        var comment_time = data.times;
+                        var username = data.username;
+                        var content = data.content;
+                        var _li = `<li class="list-group-item">
+                                        <div style="color: gray">
+                                            <span>${comment_time }</span>&nbsp;&nbsp;
+                                            <a href="">${ username }</a>
+                                        </div>
+                                        <div>
+                                            <p>${ content }</p>
+                                        </div>
+                                    </li>`;
+                        $('.content_list').append(_li);
+                        $('.content').val('')
+                    }
+                })
+            } else {
+                $('.error_msg').text('内容不能为空').css('color','red');
+                setTimeout(function () {
+                   $('.error_msg').text('')
+                },1000)
+            }
+        });
+
+
+        $('.reply').on('click',function () {
+            $('.content').focus();
+            var _val = '@' + $(this).attr('name') + '\n';
+            $('.content').val(_val);
+            pid = $(this).attr('id')
+
+        })
+
+    </script>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+{% endblock content %}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/digg.css">
+    <link rel="stylesheet" href="/static/css/base.css">
+    <script src="/static/jquery.js"></script>
+    <script src="/static/bootstrap-3.3.7/js/bootstrap.js"></script>
+</head>
+<body>
+
+<div>
+    <h3 class="my_head">
+        <a href="/{{ name }}" class="title">{{ title }}</a>
+    </h3>
+</div>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+
+            {% load my_tag %}
+            {% sub_data name request.user.username %}
+
+        </div>
+
+        <div class="col-md-6">
+        {% block content %}
+
+        {% endblock %}
+        </div>
+
+        <div class="col-md-3">
+            <div class="panel panel-danger">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Panel title</h3>
+                </div>
+                <div class="panel-body">
+                    Panel content
+                </div>
+            </div>
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Panel title</h3>
+                </div>
+                <div class="panel-body">
+                    Panel content
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

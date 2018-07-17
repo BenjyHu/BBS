@@ -1,0 +1,48 @@
+{% if username == name %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">管理</h3>
+        </div>
+        <div class="panel-body">
+            <p><a href="/backend/"><span>后台管理</span></a></p>
+        </div>
+    </div>
+{% endif %}
+
+<div class="panel panel-danger">
+    <div class="panel-heading">
+        <h3 class="panel-title">文章分类</h3>
+    </div>
+    <div class="panel-body">
+        {% for category in category_list %}
+            <p><a href="/{{ name }}/category/{{ category.title }}">{{ category.title }}({{ category.num }})</a></p>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <h3 class="panel-title">文章标签</h3>
+    </div>
+    <div class="panel-body">
+        {% for tag in tag_list %}
+            <p><a href="/{{ name }}/tag/{{ tag.tag_name }}">{{ tag.tag_name }}({{ tag.num }})</a></p>
+        {% endfor %}
+
+    </div>
+</div>
+
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <h3 class="panel-title">文章归档</h3>
+    </div>
+    <div class="panel-body">
+        {% for date_article in date_article_count %}
+            <p>
+                <a href="/{{ name }}/archive/{{ date_article.article_date }}">{{ date_article.article_date }}({{ date_article.num }})</a>
+            </p>
+        {% endfor %}
+
+    </div>
+</div>
+
