@@ -52,7 +52,7 @@
                     </li>
                 {% else %}
                     <li><a href="{% url 'login' %}">登陆</a></li>
-                    <li><a href="#">注册</a></li>
+                    <li><a href="{% url 'register' %}">注册</a></li>
                 {% endif %}
             </ul>
         </div><!-- /.navbar-collapse -->
@@ -88,7 +88,7 @@
 
                     <h5 class="title"><a href="/{{ article.author.username }}/article/{{ article.id }}">{{ article.title }}</a></h5>
                     <div class="article_info">
-                        <a href="/{{ article.author.username }}/" class="media-left"><img height="70" src="/static/img/11.jpg" title="{{ article.author.username }}"></a>
+                        <a href="/{{ article.author.username }}/" class="media-left"><img width="70" src="{{ article.author.portrait }}" title="{{ article.author.username }}"></a>
                         <span class="media-right">{{ article.desc }}</span>
                     </div>
                     <div class="pull-right">

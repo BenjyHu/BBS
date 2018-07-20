@@ -29,7 +29,7 @@ class BlogTheme(models.Model):
 class UserInfo(AbstractUser):
     telephone = models.CharField(max_length=11)
     create_time = models.DateTimeField(auto_now_add=True)
-    portrait = models.FileField(upload_to='portrait/',default='portrait/default.jpg')
+    portrait = models.FileField(upload_to='portrait/',default='/portrait/default.jpg')
     theme = models.OneToOneField('BlogTheme', on_delete=models.CASCADE, null=True)
 
 

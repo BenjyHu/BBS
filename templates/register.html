@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>博客园注册</title>
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7/css/bootstrap.css">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4" style="margin-top: 100px">
+            <h2 class="text-center">注册</h2>
+            <form method="post" action="" enctype="multipart/form-data" novalidate autocomplete="off">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="exampleInputName">用户名</label>
+                    <input name="username" type="text" class="form-control" id="exampleInputName" placeholder="用户名">
+                    <p class="text-center pull-right"><span class="msg"></span></p>
+                </div>
+
+                <div class="form-group">
+                    <label for="exampleInputPassword1">密码</label>
+                    <input name="pwd" type="password" class="form-control" id="exampleInputPassword1" placeholder="密码">
+                </div>
+
+                <div class="form-group">
+                    <label for="exampleInputPassword2">确认密码</label>
+                    <input name="re_pwd" type="password" class="form-control" id="exampleInputPassword2" placeholder="确认密码">
+                </div>
+
+                <div class="form-group">
+                    <label for="exampleInputEmail1">邮箱</label>
+                    <input name="email" type="email" class="form-control" id="exampleInputEmail1" placeholder="邮箱">
+                </div>
+
+                <div class="form-group">
+                    <label for="exampleInputTel">电话</label>
+                    <input name="tel" type="text" class="form-control" id="exampleInputTel" placeholder="电话">
+                </div>
+
+
+                <div style="height: 100px;width: 100px;padding: 2px;border: 1px solid #dddddd;position: relative;">
+                    <img style="height: 100%;width: 100%;border: 0;overflow: hidden;border-radius: 50%;" id="previewImg"
+                         src="/static/portrait/default.jpg">
+                    <input style="width: 100px;top: 0;left: 0;right: 0;bottom: 0;opacity: 0;position: absolute;z-index: 102;"
+                           id="avatarImg"
+                           name="avatar" type="file" class="img-file"/>
+                </div>
+                <div>点击图片更换(<a href="#">撤销</a>)</div>
+
+                <button type="submit" class="btn btn-default">注册</button>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="/static/jquery.js"></script>
+<script>
+    $.ajaxSetup({
+    data: {
+        csrfmiddlewaretoken: $("[name='csrfmiddlewaretoken']").val(),
+        }
+    });
+
+    $(function () {
+        bindChangeAvatar1();
+    });
+
+    function bindChangeAvatar1() {
+        $('#avatarImg').change(function () {
+            var file_obj = $(this)[0].files[0];
+            var blob = window.URL.createObjectURL(file_obj);
+            document.getElementById('previewImg').src = blob;
+            $('#previewImg').on('load',function () {
+                window.URL.revokeObjectURL(blob);
+            })
+        })
+    }
+    {# 检测输入用户名 #}
+    $('#exampleInputName').on('input',function () {
+        var _error = $('.msg');
+        var _name = $(this).val();
+        if (_name.length < 4){
+            _error.text('用户名不能少于4个字符').css('color','red')
+        }  else {
+            $.ajax({
+            url: '/auth_name/',
+            type: 'post',
+            data: {'name':_name},
+            success: function (data) {
+                data.status ? _error.text('已通过').css('color','green') : _error.text('用户名已存在').css('color','red');
+                    }
+                })
+            }
+        })
+
+</script>
+
+</body>
+</html>
