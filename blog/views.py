@@ -13,6 +13,11 @@ from blog.check_code import check_code
 
 
 def code(request):
+    '''
+    获取验证码并加到session里面,返回给前端页面
+    :param request:
+    :return:
+    '''
     img,ran_code = check_code()
     request.session['ran_code'] = ran_code
     s = BytesIO()
@@ -45,9 +50,25 @@ def login(request):
         return JsonResponse(dic)
 
 
-
 def register(request):
-    pass
+    if request.method == 'GET':
+        return render(request, 'register.html')
+    ret = {'status':False,'msg':None}
+    pwd = request.POST.get('pwd')
+    re_ped = request.POST.get('re_pwd')
+
+
+def auth_name(request):
+    if not request.is_ajax():
+        return render(request,'not_found.html')
+    ret = {'status': False}
+    # 检测用户名是否已存在
+    name = request.POST.get('name')
+    check_username = models.UserInfo.objects.filter(username=name)
+    if check_username:
+        return JsonResponse(ret)
+    ret['status'] = True
+    return JsonResponse(ret)
 
 
 def index(request):
